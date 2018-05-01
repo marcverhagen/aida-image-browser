@@ -1,0 +1,9 @@
+
+
+img { border: black solid thin; }
+
+pre { width: 1000; border: black dotted thin; padding: 8pt; }
+
+textarea { margin-left: 10px; }
+
+input.button { margin-left: 10px; background-color: lightgreen; font-size: 120%; padding: 5pt; }
