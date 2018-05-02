@@ -1,9 +1,43 @@
 
+body {
+    width: 800px;
+}
 
-img { border: black solid thin; }
+img {
+    border: black solid thin;
+}
 
-pre { width: 1000; border: black dotted thin; padding: 8pt; }
+pre {
+    xwidth: 1000;
+    padding: 5pt;
+}
 
-textarea { margin-left: 10px; }
+textarea {
+    margin-left: 10px;
+}
 
-input.button { margin-left: 10px; background-color: lightgreen; font-size: 120%; padding: 5pt; }
+input.button {
+    margin-left: 10px;
+    background-color: lightgray;
+    font-size: 110%;
+    padding: 5pt;
+}
+
+.navigation {
+    padding: 5px;
+    font-size: 120%;
+    margin-bottom: 10px;
+}
+
+.bordered {
+    border: black solid thin;
+    padding: 8pt;
+}
+
+.dotted {
+    border: black dotted thin;
+}
+
+.indented {
+    margin-left: 10px;
+}

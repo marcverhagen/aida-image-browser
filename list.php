@@ -3,6 +3,8 @@
 include 'directories.php';
 include 'utils.php';
 
+$files = read_files($DATA->IMAGES);
+
 ?>
 
 <html>
@@ -14,8 +16,7 @@ include 'utils.php';
 
 <?php
 
-$files = read_files($IMAGES_DIR);
-write_images($IMAGES_DIR, $CAPTIONS_DIR, $ANNOTATIONS_DIR, $files);
+write_annotation_list($DATA, $files);
 
 ?>
 
