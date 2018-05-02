@@ -25,11 +25,10 @@ function read_annotations($annotation_file) {
 }
 
 
-function write_images($data, $files, $limit=False) {
+function write_images($data, $files, $start, $length) {
 
-    $count = 0;
-    foreach ($files as $name) {
-        $count++;
+    $slice = array_slice($files, $start, $tart + $length);
+    foreach ($slice as $name) {
         if ($limit && $count > $limit) break;
         $image_file = $data->IMAGES .  $name . '.jpg';
         $caption_file = $data->CAPTIONS . $name . '.txt';
@@ -152,7 +151,7 @@ function write_space() {
 
 function write_image($image_file, $caption) {
     echo("<table width=800 cellpadding=5>\n\n");
-    echo("<tr><td><img src=$image_file width=800></td></tr>\n\n");
+    echo("<tr><td><img src=$image_file></td></tr>\n\n");
     echo("<tr><td>$caption</td></tr>\n\n");
     echo("</table>\n\n");
 }
@@ -195,7 +194,7 @@ function write_form($name, $annotation) {
 
 function write_row($td1, $td2) {
     echo("<tr valign=top>\n");
-    echo("  <td>$td1</td>\n");
+    echo("  <td width=50>$td1</td>\n");
     echo("  <td>$td2</td>\n");
     echo("<tr>\n");
 }

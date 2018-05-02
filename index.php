@@ -31,7 +31,7 @@
 </li>
 
 <li><a href=view.php?mode=all>View all images</a>
-    <blockquote>May take a while to load.</blockquote>
+    <blockquote>Showing 10 images per page.</blockquote>
 </li>
 
 <!--
