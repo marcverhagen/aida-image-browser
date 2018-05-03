@@ -14,7 +14,7 @@
 
 <h1>AIDA Seedling Image browser</h1>
 
-<p>This browser displays images from the AIDA SeedLing corpus. Currently it contains 250 images, which are the 250 images associated with the longest captions. Some images are annotated with some hints on what should be annotated on the image.</p>
+<p>This browser displays images from the AIDA SeedLing corpus. Currently it contains 319 images, which are the 319 images that were associated with captions. Some images are annotated with some hints on what should be annotated on the image.</p>
 
 <p>Note that this is not an image or text annotation tool. Its only purpose is to show images and to dig into how they should be annotated. The annotation functionality is not exposed to everyone yet, but will be soon. Also, once annotations are available there will be some search functionality that allows you to find images with certain objects or relations.</p>
 
@@ -25,7 +25,10 @@
 <ul>
 
 <li><a href=view.php?mode=annotated>View annotated images</a>
-    <blockquote>Annotated means there is an annotation file, which in some cases can be empty.</blockquote>
+      <blockquote>
+      <p>Annotated means there is an annotation file, which in some cases can be empty.</p>
+      <p>As of May 3rd 2018, only 4 images are annotated but the annotations there are just for testing the tool and should not be considered serious. Real annotations will be added.</p>
+      </blockquote>
 </li>
 
 <li><a href=view.php?mode=commented>View commented images</a>

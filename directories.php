@@ -2,6 +2,7 @@
 
 $VERSION = "images_captions_50";
 $VERSION = "images_captions_250";
+$VERSION = "images_captions";
 
 $IMAGES_DIR = "data/$VERSION/images/";
 $CAPTIONS_DIR = "data/$VERSION/captions/";
