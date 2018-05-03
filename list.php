@@ -3,7 +3,7 @@
 include 'directories.php';
 include 'utils.php';
 
-$files = read_files($DATA->IMAGES);
+$browser = new Browser($DATA);
 
 ?>
 
@@ -16,7 +16,7 @@ $files = read_files($DATA->IMAGES);
 
 <?php
 
-write_annotation_list($DATA, $files);
+$browser->display_annotation_list();
 
 ?>
 

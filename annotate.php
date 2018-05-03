@@ -21,7 +21,7 @@ if (array_key_exists('form', $_GET)) {
     //debug("Annotation saved to $annotation_file\n\n" . $json_string);
 }
 
-$files = read_files($IMAGES_DIR);
+$browser = new Browser($DATA);
 
 
 ?>
@@ -33,7 +33,7 @@ $files = read_files($IMAGES_DIR);
 
 <body>
 
-<?php write_file($DATA, $file, $files[$file]); ?>
+<?php display_file($DATA, $file, $browser->files[$file]); ?>
 
 </body>
 </html>

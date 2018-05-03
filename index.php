@@ -18,6 +18,8 @@
 
 <p>Note that this is not an image or text annotation tool. Its only purpose is to show images and to dig into how they should be annotated. The annotation functionality is not exposed to everyone yet, but will be soon. Also, once annotations are available there will be some search functionality that allows you to find images with certain objects or relations.</p>
 
+<p>Some captions are not in English, these captions are now presented as gibberish, which is something that will be fixed later.</p>
+
 <p>Available options:</p>
 
 <ul>
