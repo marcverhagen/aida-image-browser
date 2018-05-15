@@ -14,11 +14,11 @@
 
 <h1>AIDA Seedling Image browser</h1>
 
-<p>This browser displays images from the AIDA SeedLing corpus. Currently it contains 319 images, which are the 319 images that were associated with captions. Some images are annotated with some hints on what should be annotated on the image.</p>
+<p>This browser displays images with their captions. It contains 591 images, 319 the AIDA Seedling corpus and 272 from the diffbot dataset. Some images are annotated with some hints on what should be annotated on the image.</p>
 
 <p>Note that this is not an image or text annotation tool. Its only purpose is to show images and to dig into how they should be annotated. The annotation functionality is not exposed to everyone yet, but will be soon. Also, once annotations are available there will be some search functionality that allows you to find images with certain objects or relations.</p>
 
-<p>Some captions are not in English, these captions are now presented as gibberish, which is something that will be fixed later.</p>
+<p>Some captions frmo the Seedling corpus are not in English, these captions are sometimes presented as gibberish, not sure whether this is a browser issue or an issue with the code.</p>
 
 <p>Available options:</p>
 

@@ -153,7 +153,7 @@ function display_navigation($targets) {
 }
 
 function display_name($name, $header='h2') {
-    echo("<$header>$name</$header>\n\n");
+    echo("\n<$header>$name</$header>\n\n");
 }
 
 function display_space() {
