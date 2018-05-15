@@ -5,6 +5,17 @@ function debug($string) {
 }
 
 
+function read_term_index() {
+    $index_file = "term_index.tab";
+    $index = array();
+    $lines = file($index_file);
+    foreach ($lines as $line) {
+        $fields = explode("\t", $line);
+        $index[$fields[0]] = $fields[1]; }
+    return $index;
+}
+
+
 class Browser {
 
     function __construct($data) {
@@ -62,6 +73,14 @@ class Browser {
             echo("</tr>\n");
         }
         echo("</table>\n");
+    }
+
+    function display_list_of_images($images) {
+        foreach ($this->files as $name) {
+            if (in_array($name, $images)) {
+                $image = new Image($name, $this->data);
+                $this->display_image($image); }
+        }
     }
 }
 

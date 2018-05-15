@@ -52,7 +52,20 @@ if ($mode == 'all') {
     echo "<h1>List of all Images</h1>";
     display_navigation(array(array('index.php', 'Back home')));
     $browser->display_annotation_list();
+
+} elseif ($mode == 'term') {
+    $term = $_GET['term'];
+    $term_index = read_term_index();
+    $images = explode(" ", trim($term_index[$term]));
+    $count = count($images);
+    echo "<h1>Images for '$term'</h1>\n\n";
+    display_navigation(array(array('index.php', 'Back home')));
+    $img_txt = $count == 1 ? 'image' : 'images';
+    echo "<p>Displaying $count $img_txt</p>\n\n";
+    $browser->display_list_of_images($images);
+
 }
+
 
 ?>
 

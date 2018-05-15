@@ -41,3 +41,7 @@ input.button {
 .indented {
     margin-left: 10px;
 }
+
+.nobreak {
+    white-space: nowrap;
+}
