@@ -4,6 +4,10 @@ function debug($string) {
     echo("<pre class=dotted>$string</pre>\n\n");
 }
 
+function debug_on() {
+    ini_set('display_errors', 'On');
+    error_reporting(E_WARNING | E_STRICT);
+}
 
 function read_term_index() {
     $index_file = "term_index.tab";

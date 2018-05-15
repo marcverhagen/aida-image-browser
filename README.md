@@ -14,10 +14,23 @@ To create a usable browser you need to clone this directory to a directory on a 
 
 For the AIDA Image browser, the script `create_data.py` was used to create data from image-caption pairs from the AIDA Seedling corpus on the <a href="https://drive.google.com/drive/folders/19x5fhrx2qPZzJkT1e4EL6HzXl20TK4H3?ths=true">Google Drive</a>.
 
-The next step is to generate an index of terms in the caption:
+Once you have the data you need to point the code to it by editing a line in `directories.php` and setting the `$CORPUS` to the name of the data set:
+
+```php
+$CORPUS = "SOME_DATA_SET";
+```
+
+The last step is to generate an index of terms in the caption:
 
 ```
 $ python create_index.py data/SOME_DATA_SET
 ```
 
-This creates a file `term_index.tab` which is used by the browser when it displays the list of term sin the captions.
+This creates a file `term_index.tab` which is used by the browser when it displays the list of terms in the captions. This command requires that `nltk` is installed properly, in particular, after installation of `nltk` the following need to be installed:
+
+```python
+>>> import nltk
+>>> nltk.download('punkt')
+>>> nltk.download('averaged_perceptron_tagger')
+>>> nltk.download('universal_tagset')
+```

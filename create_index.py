@@ -42,7 +42,7 @@ def create_index(captions_dir):
                 c += 1
                 #if c > 10: break
                 update_index(caption_id, caption_text, index)
-    print(c)
+    print("Captions used for creating index:", c)
     return index
 
 
@@ -65,6 +65,8 @@ def update_index(caption_id, caption_text, index):
         lemma = lemma.lower()
         if lemma in STOPWORDS:
             continue
+        if lemma.strip() == '':
+            print(caption_id, caption_text)
         index.setdefault(lemma, []).append(caption_id)
 
 
@@ -87,10 +89,12 @@ def write_index(index):
 
 
 def print_frequent(index, n=10):
+    print("\nMost frequent terms:\n")
     for token in sorted(index):
         word_length = len(index[token])
         if word_length > n:
-            print("%3d  %s" % (word_length, token))
+            print("%5d  %s" % (word_length, token))
+    print()
 
 
 if __name__ == '__main__':

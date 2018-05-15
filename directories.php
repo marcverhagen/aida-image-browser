@@ -1,13 +1,13 @@
 <?php
 
-$VERSION = "seedling_images_captions_050";
-$VERSION = "seedling_images_captions_316";
-$VERSION = "seedling_and_diffbot";
+$CORPUS = "seedling_images_captions_050";
+$CORPUS = "seedling_images_captions_316";
+$CORPUS = "seedling_and_diffbot";
 
-$IMAGES_DIR = "data/$VERSION/images/";
-$CAPTIONS_DIR = "data/$VERSION/captions/";
-$ANNOTATIONS_DIR = "data/$VERSION/annotations/";
-$COMMENTS_DIR = "data/$VERSION/comments/";
+$IMAGES_DIR = "data/$CORPUS/images/";
+$CAPTIONS_DIR = "data/$CORPUS/captions/";
+$ANNOTATIONS_DIR = "data/$CORPUS/annotations/";
+$COMMENTS_DIR = "data/$CORPUS/comments/";
 
 $DATA = (object) array(
     'IMAGES' => $IMAGES_DIR,
