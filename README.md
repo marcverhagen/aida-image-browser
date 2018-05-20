@@ -2,7 +2,7 @@
 
 This browser gives access to images used for annotation in the AIDA-RAMFIS project.
 
-To create a usable browser you need to clone this directory to a directory on a web server and the first create content with images and captions:
+To create a usable browser you need to clone this directory to a directory on a web server and then first create content with images and captions:
 
 1. Create a directory `data/SOME_DATA_SET` with subdirectories `images`, `captions` and `annotations`.
 

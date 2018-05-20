@@ -1,52 +1,73 @@
--- phpMyAdmin SQL Dump
--- version 3.5.8.2
--- http://www.phpmyadmin.net
---
--- Host: mysql.timeml.org.fqdns.net
--- Generation Time: May 15, 2018 at 05:41 PM
--- Server version: 5.5.53-log
--- PHP Version: 5.3.29
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Database: `xtimeml-aida`
---
-
+-- --------------------------------------------------------
+-- Table structure for table `image-browser-types`
 -- --------------------------------------------------------
 
---
+CREATE TABLE `image-browser-types` (
+  `id` int(11) NOT NULL,
+  `image_id` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `type` enum('event','result','person','thing','location','other') NOT NULL,
+  `annotator` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+ALTER TABLE `image-browser-types`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `image_id` (`image_id`(191));
+
+ALTER TABLE `image-browser-types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-- --------------------------------------------------------
 -- Table structure for table `image-browser-annotations`
---
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `image-browser-annotations` (
-  `image_id` varchar(255) NOT NULL,
-  `name` varchar(25) NOT NULL,
-  `value` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY `image_id` (`image_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+    `id` int NOT NULL,
+    `image_id` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+    `objects` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+    `attributes` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+    `relations` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+    `events` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+    `habitat` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+    `annotator` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+    `comment` mediumtext COLLATE utf8mb4_bin NOT NULL,
+    `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+
+ALTER TABLE `image-browser-annotations`
+    ADD PRIMARY KEY `id` (`id`),
+    ADD KEY `image_id` (`image_id`(191));
+
+ALTER TABLE `image-browser-annotations`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 -- --------------------------------------------------------
-
---
 -- Table structure for table `image-browser-comments`
---
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `image-browser-comments` (
-  `image_id` varchar(255) NOT NULL,
-  `comment` text NOT NULL,
+  `id` int NOT NULL,
+  `image_id` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `comment` text COLLATE utf8mb4_bin NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY `image_id` (`image_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+ALTER TABLE `image-browser-comments`
+    ADD PRIMARY KEY `id` (`id`),
+    ADD KEY `image_id` (`image_id`(191));
+
+ALTER TABLE `image-browser-comments`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-- --------------------------------------------------------
+-- Table structure for table `image-browser-annotators`
+-- --------------------------------------------------------
+
+CREATE TABLE `image-browser-annotators` (
+    `annotator` varchar(25) COLLATE utf8mb4_bin NOT NULL,
+    `password` varchar(25) COLLATE utf8mb4_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+ALTER TABLE `image-browser-annotators`
+    ADD PRIMARY KEY (`annotator`);

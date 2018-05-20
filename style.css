@@ -8,7 +8,6 @@ img {
 }
 
 pre {
-    xwidth: 1000;
     padding: 5pt;
 }
 
@@ -16,17 +15,25 @@ textarea {
     margin-left: 10px;
 }
 
-input.button {
+dl {
     margin-left: 10px;
-    background-color: lightgray;
+}
+
+dd {
+    margin-bottom: 5px;
+}
+
+input.button {
+    margin-left: 8px;
     font-size: 110%;
-    padding: 5pt;
+    background-color: lightgray;
+    padding: 3pt;
 }
 
 .navigation {
     padding: 5px;
     font-size: 120%;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .bordered {
@@ -44,4 +51,8 @@ input.button {
 
 .nobreak {
     white-space: nowrap;
+}
+
+.red {
+    color: red;
 }

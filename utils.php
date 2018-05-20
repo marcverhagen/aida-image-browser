@@ -1,12 +1,22 @@
 <?php
 
-function debug($string) {
-    echo("<pre class=dotted>$string</pre>\n\n");
-}
-
 function debug_on() {
+    global $DEBUG;
+    $DEBUG = true;
     ini_set('display_errors', 'On');
     error_reporting(E_WARNING | E_STRICT);
+}
+
+function debug($var) {
+    global $DEBUG;
+    if (! $DEBUG) return;
+    echo "<pre class=dotted>\n";
+    if (is_array($var) || is_object($var))
+        print_r($var);
+        //echo var_export($var);
+    else
+        echo "$var\n";
+    echo "</pre>\n";
 }
 
 function read_term_index() {
@@ -91,21 +101,29 @@ class Browser {
 
 class Image {
 
-    function __construct($name, $data) {
+    /*
+    An instance of Image has a name which serves as a unique identifiers and
+    is associated with an image file (a jpg) and a caption file. In addition,
+    on initialization the databse will be checked for any annotations.
+    */
+
+    function __construct($name, $data, $connection) {
         $this->name = $name;
         $this->image_file = $data->IMAGES .  $name . '.jpg';
         $this->caption_file = $data->CAPTIONS . $name . '.txt';
-        $this->annotation_file = $data->ANNOTATIONS .  $name . '.ann';
-        $this->comments_file = $data->COMMENTS .  $name . '.ann';
         $this->caption = file_get_contents($this->caption_file);
-        if ($this->has_annotation()) {
-            $this->json = trim(file_get_contents($this->annotation_file));
-            $this->annotation = json_decode($this->json);
-        }
+        $this->annotation = null;
+        $this->type = null;
+        $annotations = db_get_annotation($connection, $name);
+        if ($annotations)
+            $this->annotation = $annotations[0];
+        $types = db_get_type($connection, $name);
+        if ($types)
+            $this->type = $types[0]->type;
     }
 
     function has_annotation() {
-        return file_exists($this->annotation_file);
+        return ! is_null($this->annotation);
     }
 
     function display($annotations=true) {
@@ -114,65 +132,91 @@ class Image {
         echo("<tr><td>$this->caption</td></tr>\n\n");
         echo("</table>\n\n");
         if ($annotations)
-            $this->display_annotation();
+            $this->display_annotations();
     }
 
     function display_annotation() {
         if ($this->has_annotation() && $this->annotation != null) {
             echo "<p><table class=indented width=800 cellpadding=5 cellspacing=0 border=1>\n";
-            display_row('objects', '<pre>' . $this->annotation->objects . '</pre>');
-            display_row('attributes', '<pre>' . $this->annotation->attributes . '</pre>');
-            display_row('relations', '<pre>' . $this->annotation->relations . '</pre>');
-            display_row('events', '<pre>' . $this->annotation->events . '</pre>');
-            display_row('habitat', '<pre>' . $this->annotation->habitat . '</pre>');
-            display_row('comments', '<pre>' . $this->annotation->comments . '</pre>');
+            display_row('type',  $this->type);
+            display_row('objects',  $this->annotation->objects);
+            display_row('attributes', $this->annotation->attributes);
+            display_row('relations', $this->annotation->relations);
+            display_row('events',  $this->annotation->events);
+            display_row('habitat', $this->annotation->habitat);
+            display_row('comments', $this->annotation->comment);
             echo "</table></p>\n"; }
     }
+
+    function display_annotations() {
+        if (($this->has_annotation() && $this->annotation != null) || $this->type != null) {
+            echo "<p><table class=indented width=800 cellpadding=5 cellspacing=0 border=1>\n";
+            display_row('type',  $this->type);
+            if ($this->has_annotation() && $this->annotation != null) {
+                display_row('objects',  $this->annotation->objects);
+                display_row('attributes', $this->annotation->attributes);
+                display_row('relations', $this->annotation->relations);
+                display_row('events',  $this->annotation->events);
+                display_row('habitat', $this->annotation->habitat);
+                display_row('comments', $this->annotation->comment); }
+            echo "</table></p>\n"; }
+    }
+
+    function display_type_form($mode) {
+        echo("<form action=annotate.php method=get class=indented>\n\n");
+        echo("<input type=hidden name=file value=$this->name />\n");
+        echo("<input type=hidden name=mode value=$mode />\n");
+        echo("<input type=hidden name=save_type value=1/>\n");
+        echo("<div class=bordered>\n");
+        echo("<table>\n");
+        $values = array('event', 'result', 'person', 'thing', 'location', 'other');
+        display_radio_button('Type', 'type', $values, $this->type);
+        echo("</table>\n");
+        echo("</div>\n");
+        echo("</form>\n");
+    }
+
+    function display_annotations_form($mode) {
+        echo("<form action=annotate.php method=get class=indented>\n\n");
+        echo("<input type=hidden name=file value=$this->name />\n");
+        echo("<input type=hidden name=mode value=$mode />\n");
+        echo("<input type=hidden name=save_annotation value=1/>\n");
+        echo("<div class=bordered>\n");
+        echo("<table>\n");
+        display_textarea_row('Objects', $this->annotation->objects);
+        display_textarea_row('Attributes', $this->annotation->attributes);
+        display_textarea_row('Relations', $this->annotation->relations);
+        display_textarea_row('Events', $this->annotation->eventss);
+        display_textarea_row('Habitat', $this->annotation->habitat);
+        display_textarea_row('Comment', $this->annotation->comment, 4);
+        display_row('&nbsp;', "<input class=button type=submit value='Save Annotation'>");
+        echo("</table>\n");
+        echo("</div>\n");
+        echo("</form>\n");
+    }
+
 }
 
 
 function display_file($data, $name, $details) {
     $image = new Image($name, $data);
     //$annotations = read_annotations($image->annotation_file);
-    echo("<h1>Image Note Taker</h1>\n");
+    echo("<h1>Image Editor - $name</h1>\n");
     display_navigation(
         array(array('index.php', 'Back home'), array('list.php', 'Back to list')));
-    display_name($name, 'h4');
+    //display_name($name, 'h4');
     $image->display($annotations=false);
     display_space();
     display_form($name, $image->annotation);
 }
 
-function display_form($name, $annotation) {
-    echo("<form action=annotate.php>\n\n");
-    echo("<input type=hidden name=file value=$name method=get />\n");
-    echo("<input type=hidden name=form method=get />\n");
-    echo("<div class=bordered>\n");
-    echo("<table>\n");
-    $checked = $annotation->selected == 'on' ? 'checked' : '';
-    //display_row('Selected', "<input name=selected type=checkbox $checked>");
-    display_textarea_row('Objects', $annotation->objects);
-    display_textarea_row('Attributes', $annotation->attributes);
-    display_textarea_row('Relations', $annotation->relations);
-    display_textarea_row('Events', $annotation->eventss);
-    display_textarea_row('Habitat', $annotation->habitat);
-    display_textarea_row('Comments', $annotation->comments, 4);
-    echo("<table>\n");
-    display_space();
-    echo("<input class=button type=submit value='Save Annotations'>\n\n");
-    echo("</div>\n");
-    echo("</form>\n");
-}
-
 function display_navigation($targets) {
-    echo "\n<div class=navigation>\n";
-    echo "|\n";
+    echo "\n<div class=navigation>";
     foreach ($targets as $target) {
         $url = $target[0];
         $text = $target[1];
-        echo "<a href=$url>$text</a> |\n";
-    }
-    echo "</div>\n\n";
+        echo "\n| <a href=$url>$text</a>"; }
+    echo " |\n</div>\n\n";
 }
 
 function display_name($name, $header='h2') {
@@ -183,11 +227,13 @@ function display_space() {
     echo("<p/>\n\n");
 }
 
-function display_row($td1, $td2) {
+function display_row($td1, $td2, $pre=true) {
+    $preopen = $pre ? '<pre>' : '';
+    $preclose = $pre ? '</pre>' : '';
     echo("<tr valign=top>\n");
-    echo("  <td width=50>$td1</td>\n");
-    echo("  <td>$td2</td>\n");
-    echo("<tr>\n");
+    echo("  <td width=50>$preopen$td1$preclose</td>\n");
+    echo("  <td>$preopen$td2$preclose</td>\n");
+    echo("</tr>\n");
 }
 
 function display_textarea_row($header, $annotation, $rows=2) {
@@ -195,7 +241,38 @@ function display_textarea_row($header, $annotation, $rows=2) {
     echo("<tr valign=top>\n");
     echo("  <td>$header</td>\n");
     echo("  <td><textarea name=$name rows=$rows cols=90 autofocus>$annotation</textarea></td>\n");
-    echo("<tr>\n");
+    echo("</tr>\n");
+}
+
+function display_radio_button($header, $name, $values, $current_value) {
+    echo("<tr valign=top height=50>\n");
+    echo("  <td>$header&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
+    echo("  <td>\n");
+    foreach ($values as $value) {
+        $checked = ($value == $current_value) ? " checked=checked" : '';
+        echo "    <input type=radio name=$name value=$value$checked>$value\n"; }
+    echo("  </td>\n");
+    echo("  <td><input class=button type=submit value='Save $header'></td>\n");
+    echo("</tr>\n");
+}
+
+function display_login_form($file, $login_failed) {
+    if ($login_failed)
+        echo "<h3 class=indented>Login failed, try again...</h3>\n\n";
+    else
+        echo "<h3 class=indented>You need to log in before you can annotate.</h3>\n\n";
+    echo("<form action=annotate.php method=get class=indented>\n\n");
+    echo("<input type=hidden name=file value=$file />\n");
+    echo("<input type=hidden name=logging_in value=1 />\n");
+    echo("<div class=bordered>\n");
+    echo("<table>\n");
+    display_row('login', '<input name=login />', $pre=false);
+    display_row('password', '<input name=password />', $pre=false);
+    echo("</table>\n");
+    display_space();
+    echo("<input class=button type=submit value='Submit'>\n\n");
+    echo("</div>\n");
+    echo("</form>\n");
 }
 
 ?>

@@ -6,13 +6,9 @@ $CORPUS = "seedling_and_diffbot";
 
 $IMAGES_DIR = "data/$CORPUS/images/";
 $CAPTIONS_DIR = "data/$CORPUS/captions/";
-$ANNOTATIONS_DIR = "data/$CORPUS/annotations/";
-$COMMENTS_DIR = "data/$CORPUS/comments/";
 
 $DATA = (object) array(
     'IMAGES' => $IMAGES_DIR,
-    'CAPTIONS' => $CAPTIONS_DIR,
-    'ANNOTATIONS' => $ANNOTATIONS_DIR,
-    'COMMENTS' => $COMMENTS_DIR );
+    'CAPTIONS' => $CAPTIONS_DIR);
 
 ?>
