@@ -163,7 +163,7 @@ class Image {
     }
 
     function display_type_form($mode) {
-        echo("<form action=annotate.php method=get class=indented>\n\n");
+        echo("<form action=annotate_image.php method=get class=indented>\n\n");
         echo("<input type=hidden name=file value=$this->name />\n");
         echo("<input type=hidden name=mode value=$mode />\n");
         echo("<input type=hidden name=save_type value=1/>\n");
@@ -177,7 +177,7 @@ class Image {
     }
 
     function display_annotations_form($mode) {
-        echo("<form action=annotate.php method=get class=indented>\n\n");
+        echo("<form action=annotate_image.php method=get class=indented>\n\n");
         echo("<input type=hidden name=file value=$this->name />\n");
         echo("<input type=hidden name=mode value=$mode />\n");
         echo("<input type=hidden name=save_annotation value=1/>\n");
@@ -261,7 +261,7 @@ function display_login_form($file, $login_failed) {
         echo "<h3 class=indented>Login failed, try again...</h3>\n\n";
     else
         echo "<h3 class=indented>You need to log in before you can annotate.</h3>\n\n";
-    echo("<form action=annotate.php method=get class=indented>\n\n");
+    echo("<form action=annotate_image.php method=get class=indented>\n\n");
     echo("<input type=hidden name=file value=$file />\n");
     echo("<input type=hidden name=logging_in value=1 />\n");
     echo("<div class=bordered>\n");
