@@ -47,23 +47,23 @@ class Browser {
             $this->files[] = $name; }
     }
 
-    function display_images($start, $length) {
+    function display_images($start, $length, $connection) {
         $slice = array_slice($this->files, $start, $tart + $length);
         foreach ($slice as $name) {
-            $image = new Image($name, $this->data);
+            $image = new Image($name, $this->data, $connection);
             $this->display_image($image); }
      }
 
-    function display_annotated_images() {
+    function display_annotated_images($connection) {
         foreach ($this->files as $name) {
-            $image = new Image($name, $this->data);
+            $image = new Image($name, $this->data, $connection);
             if ($image->has_annotation())
                 $this->display_image($image); }
     }
 
-    function display_commented_images() {
+    function display_commented_images($connection) {
         foreach ($this->files as $name) {
-            $image = new Image($name, $this->data);
+            $image = new Image($name, $this->data, $connection);
             if ($image->has_annotation() && $image->annotation->comments)
                     $this->display_image($image); }
     }
@@ -89,10 +89,10 @@ class Browser {
         echo("</table>\n");
     }
 
-    function display_list_of_images($images) {
+    function display_list_of_images($images, $connection) {
         foreach ($this->files as $name) {
             if (in_array($name, $images)) {
-                $image = new Image($name, $this->data);
+                $image = new Image($name, $this->data, $connection);
                 $this->display_image($image); }
         }
     }
@@ -256,6 +256,8 @@ function display_radio_button($header, $name, $values, $current_value) {
     echo("</tr>\n");
 }
 
+// Want to also make this work for other pages, so want to hand in the action and
+// make $file optional
 function display_login_form($file, $login_failed) {
     if ($login_failed)
         echo "<h3 class=indented>Login failed, try again...</h3>\n\n";

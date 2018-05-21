@@ -1,9 +1,12 @@
 <?php
 
 include 'directories.php';
+include 'database.php';
 include 'utils.php';
 
 $mode = $_GET['mode'];
+
+$connection = db_connect();
 
 $browser = new Browser($DATA);
 
@@ -33,7 +36,7 @@ if ($mode == 'all') {
     echo "<p>&nbsp;| Showing $length images starting at image $start | ";
     echo next_url($next, $length);
     echo " |</p>\n";
-    $browser->display_images($start, $length);
+    $browser->display_images($start, $length, $connection);
     echo "<p>&nbsp;| ";
     echo next_url($next, $length);
     echo " |</p>\n";
@@ -41,12 +44,12 @@ if ($mode == 'all') {
 } elseif ($mode == 'annotated') {
     echo "<h1>Annotated Images</h1>";
     display_navigation(array(array('index.php', 'Back home')));
-    $browser->display_annotated_images();
+    $browser->display_annotated_images($connection);
 
 } elseif ($mode == 'commented') {
     echo "<h1>Commented Images</h1>";
     display_navigation(array(array('index.php', 'Back home')));
-    $browser->display_commented_images();
+    $browser->display_commented_images($connection);
 
 } elseif ($mode == 'list') {
     echo "<h1>List of all Images</h1>";
@@ -62,10 +65,12 @@ if ($mode == 'all') {
     display_navigation(array(array('index.php', 'Back home')));
     $img_txt = $count == 1 ? 'image' : 'images';
     echo "<p>Displaying $count $img_txt</p>\n\n";
-    $browser->display_list_of_images($images);
+    $browser->display_list_of_images($images, $connection);
 
 }
 
+
+$connection->close();
 
 ?>
 
