@@ -1,5 +1,7 @@
 <?php
 
+$DEBUG = false;
+
 function debug_on() {
     global $DEBUG;
     $DEBUG = true;
@@ -19,6 +21,11 @@ function debug($var) {
     echo "</pre>\n";
 }
 
+function debug_vars() {
+    debug($_GET);
+    debug($_SESSION);
+}
+
 function read_term_index() {
     $index_file = "term_index.tab";
     $index = array();
@@ -29,6 +36,17 @@ function read_term_index() {
     return $index;
 }
 
+function login($connection) {
+    // Login with the credentials handed in and set the annotator and login_failed
+    // session variables as appropriate.
+    global $_GET, $_SESSION;
+    $result = db_validate_annotator($connection, $_GET['login'], $_GET['password']);
+    if ($result) {
+        $_SESSION['annotator'] = $_GET['login'];
+        $_SESSION['login_failed'] = false; }
+    else {
+        $_SESSION['login_failed'] = true; }
+}
 
 class Browser {
 
@@ -151,7 +169,7 @@ class Image {
     function display_annotations() {
         if (($this->has_annotation() && $this->annotation != null) || $this->type != null) {
             echo "<p><table class=indented width=800 cellpadding=5 cellspacing=0 border=1>\n";
-            display_row('type',  $this->type);
+            //display_row('type',  $this->type);
             if ($this->has_annotation() && $this->annotation != null) {
                 display_row('objects',  $this->annotation->objects);
                 display_row('attributes', $this->annotation->attributes);
@@ -162,21 +180,21 @@ class Image {
             echo "</table></p>\n"; }
     }
 
-    function display_type_form($mode) {
-        echo("<form action=annotate_image.php method=get class=indented>\n\n");
+    function display_image_caption_relation_form($action, $mode, $relations) {
+        echo("<form action=$action method=get class=indented>\n\n");
         echo("<input type=hidden name=file value=$this->name />\n");
-        echo("<input type=hidden name=mode value=$mode />\n");
-        echo("<input type=hidden name=save_type value=1/>\n");
+        if ($mode != null)
+            echo("<input type=hidden name=mode value=$mode />\n");
+        echo("<input type=hidden name=save_relation value=1 />\n");
         echo("<div class=bordered>\n");
         echo("<table>\n");
-        $values = array('event', 'result', 'person', 'thing', 'location', 'other');
-        display_radio_button('Type', 'type', $values, $this->type);
+        display_radio_button($mode, $relations);
         echo("</table>\n");
         echo("</div>\n");
         echo("</form>\n");
     }
 
-    function display_annotations_form($mode) {
+    function display_voxml_form($mode) {
         echo("<form action=annotate_image.php method=get class=indented>\n\n");
         echo("<input type=hidden name=file value=$this->name />\n");
         echo("<input type=hidden name=mode value=$mode />\n");
@@ -244,27 +262,27 @@ function display_textarea_row($header, $annotation, $rows=2) {
     echo("</tr>\n");
 }
 
-function display_radio_button($header, $name, $values, $current_value) {
+function display_radio_button($header, $values) {
     echo("<tr valign=top height=50>\n");
-    echo("  <td>$header&nbsp;&nbsp;&nbsp;&nbsp;</td>\n");
+    echo("  <td colspan=2>$header&nbsp;(select all that apply)</td>\n");
+    echo("</tr>\n");
+    echo("<tr valign=top height=50>\n");
     echo("  <td>\n");
     foreach ($values as $value) {
-        $checked = ($value == $current_value) ? " checked=checked" : '';
-        echo "    <input type=radio name=$name value=$value$checked>$value\n"; }
+        echo "    <input type=radio name=$value value=1>$value\n"; }
     echo("  </td>\n");
     echo("  <td><input class=button type=submit value='Save $header'></td>\n");
     echo("</tr>\n");
 }
 
-// Want to also make this work for other pages, so want to hand in the action and
-// make $file optional
-function display_login_form($file, $login_failed) {
+function display_login_form($action, $file, $login_failed) {
     if ($login_failed)
         echo "<h3 class=indented>Login failed, try again...</h3>\n\n";
     else
         echo "<h3 class=indented>You need to log in before you can annotate.</h3>\n\n";
-    echo("<form action=annotate_image.php method=get class=indented>\n\n");
-    echo("<input type=hidden name=file value=$file />\n");
+    echo("<form action=$action method=get class=indented>\n\n");
+    if ($file != null)
+      echo("<input type=hidden name=file value=$file />\n");
     echo("<input type=hidden name=logging_in value=1 />\n");
     echo("<div class=bordered>\n");
     echo("<table>\n");
@@ -276,5 +294,6 @@ function display_login_form($file, $login_failed) {
     echo("</div>\n");
     echo("</form>\n");
 }
+
 
 ?>

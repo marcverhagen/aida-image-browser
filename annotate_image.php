@@ -1,5 +1,17 @@
 <?php
 
+/*
+
+This is now supposed to be an all-purpose annotator for all the tasks available
+and it should only be accessed from an image as presented in the browser (and not
+from a task list).
+
+Because of that, the code below can be simplified (before annotate_icrel.php this
+script tried to deal with all annotation modes).
+
+*/
+
+
 include 'directories.php';
 include 'database.php';
 include 'utils.php';
@@ -8,20 +20,28 @@ $DEBUG = false;
 
 debug_on();
 session_start();
-//session_destroy();
+
+debug_vars();
 
 $file = $_GET['file'];
 $mode = $_GET['mode'];
 
+if isset($_GET['next'])
+    $file = $_GET['next'];
+
 $connection = db_connect();
 
 $logged_in = false;
-$login_failed = true;
+$login_failed = false;
+
+// TODO: use login() in utils
 if (isset($_GET['logging_in'])) {
     $result = db_validate_annotator($connection, $_GET['login'], $_GET['password']);
     if ($result) {
         $login_failed = false;
         $_SESSION['annotator'] = $_GET['login']; }
+    else {
+        $login_failed = true; }
 }
 
 if (isset($_SESSION['annotator'])) {
@@ -47,13 +67,13 @@ if ($logged_in && array_key_exists('save_annotation', $_GET)) {
     db_insert_annotation($connection, $file, $annotation, $annotator);
 }
 
-// This can be used if we are running this off a list of images that are assigned
-// to the annotator. In that case, $_GET['next'] will be an integer that points to
-// an element of a task list list. First time you run this for the annotator you
-// need to check how far the annotator got the previous time. (Probably easiest when
-// you just start off with presenting a list, the next is set accordingly).
+// Used if we are running this off a list of images that are assigned to the
+// annotator. In that case, $_GET['next'] will point to the next image in the
+// task list. This is currently only used in the ImageCaptionRelation mode.
+$next_file = null;
 if (isset($_GET['next']))
-    $file = get_next_image_for_annotator($annotator, $_GET['next']);
+    $next_file = $_GET['next'];
+
 
 $image = new Image($file, $DATA,  $connection);
 
@@ -70,19 +90,20 @@ $connection->close();
 
 <?php
 
-echo "<h1>Image Editor - $file</h1>\n\n";
-$image->display();
+echo "<h1>Image annotator - $file</h1>\n\n";
+
+$image->display();//$show_current=false);
 
 if ($logged_in) {
-    if ($mode == 'type')
-        $image->display_type_form($mode);
-    elseif ($mode == 'annotation')
-        $image->display_annotations_form($mode);
+    if ($mode == 'ImageCaptionRelation')
+        $image->display_image_caption_relation_form($mode, $next_file);
+    elseif ($mode == 'VoxML')
+        $image->display_voxml_form($mode);
     else {
-        $image->display_type_form($mode);
-        $image->display_annotations_form($mode); }
+        $image->display_image_caption_relation_form($mode, $next_file);
+        $image->display_voxml_form($mode); }
 } else {
-    display_login_form($file, $login_failed);
+    display_login_form('annotate_image.php', $file, $login_failed);
 }
 
 ?>

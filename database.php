@@ -1,14 +1,11 @@
 <?php
 
-$user = 'root';
-$password = 'root';
-$db = 'aida-image-browser';
-$host = 'localhost';
-$port = 8889;
+include 'connection.php';
 
-$ANNOTATORS = "`image-browser-annotators`";
-$ANNOTATIONS = "`image-browser-annotations`";
-$TYPES = "`image-browser-types`";
+$ANNOTATORS = "`ib-annotators`";
+$ANNOTATIONS = "`ib-annotations-voxml`";
+$TYPES = "`ib-annotations-icrels`";
+$TASKS = "`ib-tasks`";
 
 
 function db_connect() {
@@ -32,6 +29,11 @@ function db_select($conn, $query) {
 }
 
 function db_insert($conn, $query) {
+    debug($query);
+    $result = $conn->query($query);
+}
+
+function db_update($conn, $query) {
     debug($query);
     $result = $conn->query($query);
 }
@@ -66,11 +68,11 @@ function db_get_all_annotations($conn) {
     return db_select($conn, $query);
 }
 
-function db_insert_type($connection, $file, $type, $annotator) {
+function db_insert_type($connection, $file, $relations, $annotator) {
     global $TYPES;
     $query =
-        "INSERT INTO $TYPES (image_id, type, annotator)\n" .
-        "VALUES ('$file', '$type', '$annotator');";
+        "INSERT INTO $TYPES (image_id, relation, annotator)\n" .
+        "VALUES ('$file', '$relations', '$annotator');";
     db_insert($connection, $query);
 }
 
@@ -96,6 +98,18 @@ function db_validate_annotator($connection, $annotator, $password) {
     //debug($result);
     if (! $result) return false;
     return $result[0]->password == $password;
+}
+
+function db_get_tasks($connection, $annotator) {
+    global $TASKS;
+    $query = "SELECT * FROM $TASKS WHERE annotator='$annotator';";
+    return db_select($connection, $query);
+}
+
+function db_update_task($connection, $task_id) {
+    global $TASKS;
+    $query = "UPDATE $TASKS SET done=1 WHERE id=$task_id;";
+    return db_update($connection, $query);
 }
 
 
