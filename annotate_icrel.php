@@ -28,7 +28,7 @@ session_start();
 $MODE = 'EventCaptionRelation';
 
 $RELATIONS = array(
-    'event', 'result', 'person', 'thing', 'location', 'not-english', 'other');
+    'event', 'result', 'person', 'non-person', 'location', 'not-english', 'other');
 
 function set_current_task() {
     // Set the current task to the first tasks from the list that is not done yet
@@ -92,7 +92,9 @@ display_navigation(
     array(
         array('index.php', 'home'),
         array('annotate.php', 'annotator home'),
-        array('guidelines-EventCaptionRelations.html', 'guidelines'),
+        // removed this because now we need the back button and that might spur
+        // another database update, need to add parent/blank for the html
+        // array('guidelines-EventCaptionRelations.html', 'guidelines'),
         array('logout.php', 'log out')));
 
 if ($current_task == null) {
