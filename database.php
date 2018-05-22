@@ -11,7 +11,8 @@ $TASKS = "`ib-tasks`";
 function db_connect() {
     global $host, $port, $user, $password, $db;
     //debug("$host:$port $user $password $db");
-    $conn = new mysqli("$host:$port", $user, $password, $db);
+    $host = ($port == null) ? $host : "$host:$port";
+    $conn = new mysqli($host, $user, $password, $db);
     if ($conn->connect_error)
         die("Connection failed: " . $conn->connect_error);
     return $conn;
