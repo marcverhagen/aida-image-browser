@@ -26,6 +26,13 @@ function debug_vars() {
     debug($_SESSION);
 }
 
+function contains($haystack, $needle) {
+
+    if (strpos($haystack, $needle) === false)
+        return false;
+    return true;
+}
+
 function read_term_index() {
     $index_file = "term_index.tab";
     $index = array();
@@ -79,6 +86,26 @@ class Browser {
                 $this->display_image($image); }
     }
 
+    function display_iaa_images($connection, $cat) {
+        foreach ($this->files as $name) {
+            $image = new Image($name, $this->data, $connection);
+            if ($image->icrels) {
+                if (count($image->icrels) != 2)
+                    continue;
+                $anno1 = $image->icrels[0];
+                $anno2 = $image->icrels[1];
+                if ($anno1->relation == $anno2->relation)
+                    continue;
+                $rel1 = explode(' ', $anno1->relation);
+                $rel2 = explode(' ', $anno2->relation);
+                if (in_array($cat, $rel1) && in_array($cat, $rel2))
+                    continue;
+                if (in_array($cat, $rel1) || in_array($cat, $rel2))
+                    $this->display_image($image, $annotations=false, $icrels=true);
+            }
+        }
+    }
+
     function display_commented_images($connection) {
         foreach ($this->files as $name) {
             $image = new Image($name, $this->data, $connection);
@@ -86,10 +113,10 @@ class Browser {
                     $this->display_image($image); }
     }
 
-    function display_image($image) {
+    function display_image($image, $annotations, $icrels) {
         display_name($image->name, 'h3');
         echo("<blockquote>\n");
-        $image->display();
+        $image->display($annotations, $icrels);
         echo("</blockquote>\n");
     }
 
@@ -122,7 +149,7 @@ class Image {
     /*
     An instance of Image has a name which serves as a unique identifiers and
     is associated with an image file (a jpg) and a caption file. In addition,
-    on initialization the databse will be checked for any annotations.
+    on initialization the database will be checked for any annotations.
     */
 
     function __construct($name, $data, $connection) {
@@ -131,52 +158,53 @@ class Image {
         $this->caption_file = $data->CAPTIONS . $name . '.txt';
         $this->caption = file_get_contents($this->caption_file);
         $this->annotation = null;
-        $this->type = null;
+        $this->icrels = null;
         $annotations = db_get_annotation($connection, $name);
         if ($annotations)
             $this->annotation = $annotations[0];
-        $types = db_get_type($connection, $name);
-        if ($types)
-            $this->type = $types[0]->type;
+        $icrels = db_get_type($connection, $name);
+        if ($icrels)
+            $this->icrels = $icrels;
     }
 
     function has_annotation() {
         return ! is_null($this->annotation);
     }
 
-    function display($annotations=true) {
+    function display($annotations=true, $icrels=true) {
         echo("<table width=800 cellpadding=5>\n\n");
         echo("<tr><td><img src=$this->image_file></td></tr>\n\n");
         echo("<tr><td>$this->caption</td></tr>\n\n");
         echo("</table>\n\n");
+        if ($icrels)
+            $this->display_icrels_annotations();
         if ($annotations)
-            $this->display_annotations();
+            $this->display_voxml_annotations();
     }
 
-    function display_annotation() {
-        if ($this->has_annotation() && $this->annotation != null) {
+    function display_annotations() {
+        $this->display_icrels_annotations();
+        $this->display_voxml_annotations();
+    }
+
+    function display_icrels_annotations() {
+        if ($this->icrels != null) {
             echo "<p><table class=indented width=800 cellpadding=5 cellspacing=0 border=1>\n";
-            display_row('type',  $this->type);
+            foreach ($this->icrels as $icrel) {
+                $header = 'ImageCaptionRelation (' . $icrel->annotator . ')';
+                display_row($header , $icrel->relation); }
+            echo "</table></p>\n"; }
+    }
+
+    function display_voxml_annotations() {
+        if ($this->annotation != null) {
+            echo "<p><table class=indented width=800 cellpadding=5 cellspacing=0 border=1>\n";
             display_row('objects',  $this->annotation->objects);
             display_row('attributes', $this->annotation->attributes);
             display_row('relations', $this->annotation->relations);
             display_row('events',  $this->annotation->events);
             display_row('habitat', $this->annotation->habitat);
             display_row('comments', $this->annotation->comment);
-            echo "</table></p>\n"; }
-    }
-
-    function display_annotations() {
-        if (($this->has_annotation() && $this->annotation != null) || $this->type != null) {
-            echo "<p><table class=indented width=800 cellpadding=5 cellspacing=0 border=1>\n";
-            //display_row('type',  $this->type);
-            if ($this->has_annotation() && $this->annotation != null) {
-                display_row('objects',  $this->annotation->objects);
-                display_row('attributes', $this->annotation->attributes);
-                display_row('relations', $this->annotation->relations);
-                display_row('events',  $this->annotation->events);
-                display_row('habitat', $this->annotation->habitat);
-                display_row('comments', $this->annotation->comment); }
             echo "</table></p>\n"; }
     }
 

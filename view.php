@@ -4,6 +4,9 @@ include 'directories.php';
 include 'database.php';
 include 'utils.php';
 
+$DEBUG = false;
+//debug_on();
+
 $mode = $_GET['mode'];
 
 $connection = db_connect();
@@ -50,6 +53,13 @@ if ($mode == 'all') {
     echo "<h1>Commented Images</h1>";
     display_navigation(array(array('index.php', 'Back home')));
     $browser->display_commented_images($connection);
+
+} elseif ($mode == 'iaa') {
+    $cat = $_GET['cat'];
+    echo "<h1>Images with clashing annotations</h1>";
+    echo "<h4>Showing images with disagreement on the $cat category</h4>";
+    display_navigation(array(array('index.php', 'Back home')));
+    $browser->display_iaa_images($connection, $cat);
 
 } elseif ($mode == 'list') {
     echo "<h1>List of all Images</h1>";

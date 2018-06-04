@@ -19,7 +19,7 @@ function db_connect() {
 }
 
 function db_select($conn, $query) {
-    debug($query);
+    //debug($query);
     $result = $conn->query($query);
     $objects = array();
     if ($result->num_rows > 0) {
@@ -45,7 +45,7 @@ function db_get_type($conn, $image_id) {
     // Get the most recent type for the image
     // *** Add other annotator types ***
     global $TYPES;
-    $query = "SELECT * FROM $TYPES WHERE image_id='$image_id' ORDER BY timestamp DESC LIMIT 1;";
+    $query = "SELECT * FROM $TYPES WHERE image_id='$image_id' ORDER BY timestamp DESC;";
     return db_select($conn, $query);
 }
 
