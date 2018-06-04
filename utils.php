@@ -76,14 +76,14 @@ class Browser {
         $slice = array_slice($this->files, $start, $tart + $length);
         foreach ($slice as $name) {
             $image = new Image($name, $this->data, $connection);
-            $this->display_image($image); }
+            $this->display_image($image, true, true); }
      }
 
     function display_annotated_images($connection) {
         foreach ($this->files as $name) {
             $image = new Image($name, $this->data, $connection);
-            if ($image->has_annotation())
-                $this->display_image($image); }
+            if ($image->has_annotation()) {
+                $this->display_image($image, true, true); }}
     }
 
     function display_iaa_images($connection, $cat) {
@@ -110,7 +110,7 @@ class Browser {
         foreach ($this->files as $name) {
             $image = new Image($name, $this->data, $connection);
             if ($image->has_annotation() && $image->annotation->comments)
-                    $this->display_image($image); }
+                    $this->display_image($image, true, true); }
     }
 
     function display_image($image, $annotations, $icrels) {
@@ -138,7 +138,7 @@ class Browser {
         foreach ($this->files as $name) {
             if (in_array($name, $images)) {
                 $image = new Image($name, $this->data, $connection);
-                $this->display_image($image); }
+                $this->display_image($image, true, true); }
         }
     }
 }
