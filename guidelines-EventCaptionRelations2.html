@@ -1,0 +1,102 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<h1>Image Annotator</h1>
+
+<h3>Guidelines for annotating relations between images and captions</h3>
+
+<p>The goal of this annotation is not to annotate images or the text in
+captions, the goal is to identify those image-caption pairs where the content of
+the image line up with the content of the captions. That is, if the image is of
+an event or object that is also mentioned in the caption, then that is what is
+specified in the annotation.</p>
+
+
+<p>The following labels are available:</p>
+
+<table cellspacing=0 cellpadding=5 border=1 class=indented>
+
+<tr valign=top>
+    <td>EVENT</td>
+    <td>The image shows an event or situation described in the text</td>
+</tr>
+
+<tr valign=top>
+    <td>RESULT</td>
+    <td>The image shows the result or aftermath of an event described in the text</td>
+</tr>
+
+<tr valign=top>
+    <td>PERSON</td>
+    <td>The image shows a person described in the text</td>
+</tr>
+
+<tr valign=top>
+    <td>NON-PERSON</td>
+    <td>The image shows a thing or animal described in the text</td>
+</tr>
+
+<tr valign=top>
+    <td>LOCATION</td>
+    <td>The image shows the location mentioned (includes maps)</td>
+</tr>
+
+<tr valign=top>
+    <td>OTHER</td>
+    <td>Unrelated,  or doesn't fit into these categories</td>
+</tr>
+
+<tr valign=top>
+    <td>NOT-ENGLISH</td>
+    <td>Text is not English. This does not apply to non-English text in the
+    image.</td>
+</tr>
+
+</table>
+
+<p>Select as many as apply, for example, an image that describes both a location
+and a person mentioned in the text should be annotated with both the LOCATION
+and PERSON labels. The one exception to this rule is that when you use the OTHER
+or NOT-ENGLISH label then you should not add any other labels.</p>
+
+<p>Some special cases:</p>
+
+<ul class="spacy">
+
+  <li>The image is of a map. Use the LOCATION label and nothing else, unless the
+  map is an areal shot and clearly contains things .</li>
+  
+  <li>The image is a hybrid (several images, perhaps including a map,
+  screenshots and who knows what). Imagine annotating the pairs of all sub
+  images and the one caption (subimage1-caption, subimage2-caption etcetera) and
+  enter the union of the results.</li>
+  
+  <li>There is a person mentioned in the caption by name and there is a person
+  in the image that I do not know. Annotate as PERSON, unless you know that the
+  person pictured is not the person mentioned.</li>
+  
+  <li>There is some doubt whether the event mentioned in the text is actually
+  depicted in the image. Do not annotate this with the EVENT label.</li>
+
+  <li>A location is mentioned in the caption, for example some town, but I do
+  not know for sure whether the location shown in the image is actually that
+  location. In this case use LOCATION if it seems plausable that the location in
+  image and caption match, for example when the image shows a house and the
+  caption says "countryside-residence in Mezhyhirya". Do not annotate with
+  LOCATION if the location pictured clearly does not match what is in the
+  caption or if you cannot determine what kind of location you see in the
+  picture.</li>
+
+  <!--
+  <li></li>
+  -->
+  
+</ul>
+
+</body>
+</html>

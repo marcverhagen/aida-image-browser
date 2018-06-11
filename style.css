@@ -23,6 +23,10 @@ dd {
     margin-bottom: 5px;
 }
 
+ul.spacy > li {
+    margin-bottom: 10px;
+}
+
 input.button {
     margin-left: 8px;
     background-color: lightgray;

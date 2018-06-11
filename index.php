@@ -43,6 +43,10 @@
     <blockquote>Access to the annotation functionality. You will need a username and a password for this.</blockquote>
 </li>
 
+<li><a href=iaa.html>Inter Annotator Agreement</a>
+    <blockquote>Some numbers and examples of annotator agreement and disagreement.</blockquote>
+</li>
+
 <!--
 <li><a href=list.php?mode=view>View list</a></li>
 -->
